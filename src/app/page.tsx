@@ -1,12 +1,12 @@
 "use client"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { MlHeading } from "@/components/molecules/ml-heading/ml-heading"
 import { OrHeader } from "@/components/organisms/or-header/or-header"
 import { CatalogList } from "@/components/organisms/catalog-list/catalog-list"
 import { fetchGenres } from "@/services/gameService"
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [genres, setGenres] = useState<string[]>([])
@@ -33,9 +33,19 @@ export default function Home() {
 
   return (
     <>
-      <OrHeader/>
       <MlHeading genres={genres} value={genre} onChange={handleGenreChange}/>
       <CatalogList genre={genre}/>
+    </>
+  )
+}
+
+export default function Home() {
+  return (
+    <>
+      <OrHeader/>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <HomeContent />
+      </Suspense>
     </>
   )
 }
